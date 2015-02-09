@@ -8,7 +8,7 @@
  */
 - (void)toProVC:(UIViewController*)propVC
 {
-    propVC.view.backgroundColor=[UIColor clearColor];
+   
     
     if ([[[UIDevice currentDevice]systemVersion]floatValue]>=8.0) {
         propVC.modalPresentationStyle=UIModalPresentationOverCurrentContext;
@@ -16,9 +16,15 @@
         propVC.modalPresentationStyle=UIModalPresentationCurrentContext;
     }
     
+    UIGraphicsBeginImageContext([UIScreen mainScreen].bounds.size);     //currentView 当前的view  创建一个基于位图的图形上下文并指定大小为
+    UIWindow *curWindow = [UIApplication sharedApplication].windows[0];
+    [curWindow.layer renderInContext:UIGraphicsGetCurrentContext()];//renderInContext呈现接受者及其子范围到指定的上下文
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();//返回一个基于当前图形上下文的图片
+    UIGraphicsEndImageContext();//移除栈顶的基于当前位图的图形上下文
+    
+    
     [self presentViewController:propVC animated:YES completion:^{
-        //网上搜索的部分资料说需要，本人测试不需要可以实现相关功能，请根据需要进行设置
-        //propVC.view.superview.backgroundColor=[UIColor clearColor];
+        propVC.view.backgroundColor=[UIColor colorWithPatternImage:viewImage];
     }];
 }
 
